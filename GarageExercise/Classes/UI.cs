@@ -24,7 +24,7 @@ namespace GarageExercise.Classes
                 Console.WriteLine("1. Park a vehicle");
                 Console.WriteLine("2. Unpark a vehicle");
                 Console.WriteLine("3. List parked vehicle(s)");
-                //Console.WriteLine("4. Search for a vehicle");
+                Console.WriteLine("4. Search for a vehicle");
                 Console.WriteLine("5. Exit");
                 Console.Write("Enter your choice: ");
 
@@ -46,7 +46,7 @@ namespace GarageExercise.Classes
                          SearchVehicle();
                         break;
                     case "5":
-                        Console.WriteLine("Exiting the application...");
+                        Console.WriteLine("Exiting...");
                         Environment.Exit(0);
                         break;
                     default:
@@ -62,10 +62,10 @@ namespace GarageExercise.Classes
         {
             Console.WriteLine("Which type of vehicle to park:");
             Console.WriteLine("1. Motorcycle");
-            //Console.WriteLine("2. Car");
-            //Console.WriteLine("3. Bus");
-            //Console.WriteLine("4. Boat");
-            //Console.WriteLine("5. Airplane"); 
+            Console.WriteLine("2. Car");
+            Console.WriteLine("3. Bus");
+            Console.WriteLine("4. Boat");
+            Console.WriteLine("5. Airplane"); 
             Console.Write("Enter your choice: ");
 
             string vehicleType = Console.ReadLine();
@@ -78,17 +78,17 @@ namespace GarageExercise.Classes
                     ParkVehicle(CreateMotorcycle());
                     break;
                 case "2":
-                //    AddVehicle(CreateCar());
-                //    break;
-                //case "3":
-                //    AddVehicle(CreateBus());
-                //    break;
-                //case "4":
-                //    AddVehicle(CreateBoat());
-                //    break;
-                //case "5":
-                //    AddVehicle(CreateAirplane());
-                //    break;
+                    ParkVehicle(CreateCar());
+                    break;
+                case "3":
+                    ParkVehicle(CreateBus());
+                    break;
+                case "4":
+                    ParkVehicle(CreateBoat());
+                    break;
+                case "5":
+                    ParkVehicle(CreateAirplane());
+                    break;
 
 
                 default:
@@ -168,24 +168,59 @@ namespace GarageExercise.Classes
                 GetPropertyValue("Fuel type")
             );
         }
-        //private IVehicle CreateCar()
-        //{
-         
-        //}
-
-        //private IVehicle CreateBus()
-        //{
-         
-        //}
-
-        //private IVehicle CreateAirplane()
-        //{          
-        //}
+        
+        private IVehicle CreateBoat()
+        {
+            return new Boat(
+                GetPropertyValue("Reg Number"),
+                GetPropertyValue("Color"),
+                GetNumericPropertyValue("Number of wheels"),
+                GetNumericPropertyValue("Number of Engines"),
+                GetPropertyValue("Fuel Type"),
+                GetDoublePropertyValue("Length")
+            );
 
 
-        //private IVehicle CreateBoat()
-        //{
-        //}
+        }
+
+        private IVehicle CreateCar()
+        {
+            return new Car(
+                GetPropertyValue("Reg number"),
+                GetPropertyValue("Color"),
+                GetNumericPropertyValue("Number of wheels"),
+                GetNumericPropertyValue("Cylinder volume"),
+                GetPropertyValue("Fuel type")
+            );
+        }
+
+        private IVehicle CreateBus()
+        {
+            return new Bus(
+                GetPropertyValue("Reg number"),
+                GetPropertyValue("Color"),
+                GetNumericPropertyValue("Number of wheels"),
+                GetNumericPropertyValue("Number of seats"),
+                GetPropertyValue("Fuel type")
+
+            );
+
+        }
+
+        private IVehicle CreateAirplane()
+        {
+            return new Airplane(
+                GetPropertyValue("Register Number"),
+                GetPropertyValue("Color"),
+                GetNumericPropertyValue("Wheels Number"),
+                GetNumericPropertyValue("Number of Engines"),
+                GetNumericPropertyValue("Cylinder Volume"),
+                GetPropertyValue("Fuel Type")
+                );
+        }
+
+
+
 
 
         // Dynamic methods for getting propery values from vehicles

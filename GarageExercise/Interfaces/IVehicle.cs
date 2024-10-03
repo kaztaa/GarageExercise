@@ -8,6 +8,7 @@
         string Color { get; }
         int WheelsNumber { get; }
 
+        
         void IsParked();
         void ParkVehicle();
         void UnparkVehicle();

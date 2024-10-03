@@ -1,20 +1,20 @@
 ﻿namespace GarageExercise.Classes
 {
-    // The Car class
+    // The Bus class
     public class Bus : Vehicle
     {   // Getters
-        public int CylinderVolume { get; }
+        public int NumberOfSeats { get; }
         public string FuelType { get; }
 
         // Constructor
-        public Bus(string regNumber, string color, int wheelsNumber, int cylinderVolume, string fuelType)
-            : base("Motorcycle", regNumber, color, wheelsNumber)
+        public Bus(string regNumber, string color, int wheelsNumber, int numberOfSeats, string fuelType)
+            : base("Bus", regNumber, color, wheelsNumber)
         {
-            CylinderVolume = cylinderVolume;
+            NumberOfSeats = numberOfSeats;
             FuelType = fuelType;
         }
 
-        // Parked message
+        // IsParked message
         public override void IsParked() => Console.WriteLine($"Bus {RegNumber} is parked.");
     }
 }

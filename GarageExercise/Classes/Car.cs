@@ -8,13 +8,13 @@
 
         // Constructor
         public Car(string regNumber, string color, int wheelsNumber, int cylinderVolume, string fuelType)
-            : base("Motorcycle", regNumber, color, wheelsNumber)
+            : base("Car", regNumber, color, wheelsNumber)
         {
             CylinderVolume = cylinderVolume;
             FuelType = fuelType;
         }
 
-        // Parked message
+        // IsParked message
         public override void IsParked() => Console.WriteLine($"Car {RegNumber} is parked.");
     }
 }

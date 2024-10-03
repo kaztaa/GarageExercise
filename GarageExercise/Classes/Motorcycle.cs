@@ -14,7 +14,7 @@
             FuelType = fuelType;
         }
 
-        // Parked message
+        // IsParked message
         public override void IsParked() => Console.WriteLine($"Motorcycle {RegNumber} is parked.");
     }
 }
