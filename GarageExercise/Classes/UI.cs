@@ -1,4 +1,6 @@
 ﻿using GarageExercise.Interfaces;
+using System.ComponentModel.Design;
+using System.Text.RegularExpressions;
 
 namespace GarageExercise.Classes
 {
@@ -20,7 +22,6 @@ namespace GarageExercise.Classes
 
             while (true)
             {
-                
                 Console.WriteLine("1. Park a vehicle");
                 Console.WriteLine("2. Unpark a vehicle");
                 Console.WriteLine("3. List parked vehicle(s)");
@@ -105,11 +106,11 @@ namespace GarageExercise.Classes
             if (vehicleToPark != null)
             {
                 garage.ParkVehicle(vehicleToPark);
-                Console.WriteLine($"{vehicleToPark.Type} with Reg number {vehicleToPark.RegNumber} is parked.");
+                Console.WriteLine($"{vehicleToPark.Type} with Reg number {vehicleToPark.RegNumber} is parked.\n");
             }
             else
             {
-                Console.WriteLine("Error. Failed to park vehicle.");
+                Console.WriteLine("Error. Failed to park vehicle.\n");
             }
         }
 
@@ -118,7 +119,6 @@ namespace GarageExercise.Classes
         // Method for unparking vechicle
         private void UnparkVehicle()
         {
-            // string regNumber gets it's value from calling GetPropertyValue
             string regNumber = GetPropertyValue("Reg number of the vehicle to unpark");
             var vehicle = garage.Vehicles.FirstOrDefault(v => v.RegNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase));
             if (vehicle != null)
@@ -234,11 +234,11 @@ namespace GarageExercise.Classes
         private IVehicle CreateBoat()
         {
             return new Boat(
-                GetPropertyValue("Reg Number"),
+                GetPropertyValue("Reg number"),
                 GetPropertyValue("Color"),
                 GetNumericPropertyValue("Number of wheels"),
-                GetNumericPropertyValue("Number of Engines"),
-                GetPropertyValue("Fuel Type"),
+                GetNumericPropertyValue("Number of engines"),
+                GetPropertyValue("Fuel type"),
                 GetDoublePropertyValue("Length")
             );
 
@@ -247,13 +247,15 @@ namespace GarageExercise.Classes
 
         private IVehicle CreateCar()
         {
-            return new Car(
+            
+            Car car = new Car(
                 GetPropertyValue("Reg number"),
                 GetPropertyValue("Color"),
                 GetNumericPropertyValue("Number of wheels"),
                 GetNumericPropertyValue("Cylinder volume"),
                 GetPropertyValue("Fuel type")
             );
+            return car;
         }
 
         private IVehicle CreateBus()
@@ -272,12 +274,12 @@ namespace GarageExercise.Classes
         private IVehicle CreateAirplane()
         {
             return new Airplane(
-                GetPropertyValue("Register Number"),
+                GetPropertyValue("Reg number"),
                 GetPropertyValue("Color"),
-                GetNumericPropertyValue("Wheels Number"),
-                GetNumericPropertyValue("Number of Engines"),
-                GetNumericPropertyValue("Cylinder Volume"),
-                GetPropertyValue("Fuel Type")
+                GetNumericPropertyValue("Number of wheels"),
+                GetNumericPropertyValue("Number of engines"),
+                GetNumericPropertyValue("Cylinder volume"),
+                GetPropertyValue("Fuel type")
                 );
         }
 
@@ -286,13 +288,38 @@ namespace GarageExercise.Classes
 
 
         // Dynamic methods for getting propery values from vehicles
+
+        // For properties of type string
         private string GetPropertyValue(string propertyName)
         {
-            Console.Write($"Enter {propertyName}: ");
-            return Console.ReadLine();
+
+            // Reg number check
+            if (propertyName == "Reg number")
+            {
+                Console.Write($"Enter {propertyName}: ");
+                string regNumToVerify = Console.ReadLine();
+                bool notVerified = false;
+
+                while (!notVerified)
+                {
+                    if (!Regex.IsMatch(regNumToVerify, @"^[a-zA-Z]{3}\d{3}$"))
+                    {
+                        Console.Write($"Enter {propertyName} (abc123/ABC123 format): ");
+                        regNumToVerify = Console.ReadLine();
+                    }
+                    notVerified = true;
+                }
+                return regNumToVerify;
+            }
+            else
+            {
+                Console.Write($"Enter {propertyName}: ");
+                return Console.ReadLine();
+            }
         }
 
-        // For values of type int
+
+        // For properties of type int
         private int GetNumericPropertyValue(string propertyName)
         {
             Console.Write($"Enter {propertyName}: ");
@@ -302,12 +329,12 @@ namespace GarageExercise.Classes
             }
             else
             {
-                Console.WriteLine("Error. Enter correct int.");
+                Console.WriteLine("Error. Enter a positive number.");
                 return -1; // Return a default value or an indicator of error
             }
         }
 
-        // For values of type double
+        // For properties of type double
         private double GetDoublePropertyValue(string propertyName)
         {
             Console.Write($"Enter {propertyName}: ");

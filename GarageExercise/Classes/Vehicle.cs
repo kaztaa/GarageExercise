@@ -25,7 +25,8 @@ namespace GarageExercise.Classes
             {
                 if (!IsValidRegNumber(value))
                 {
-                    Console.WriteLine("Error: Wrong reg number format .");
+                    Console.WriteLine("Error: Wrong reg number format.");
+                    ParkVehicle();
                 }
                 regNumber = value.ToUpper();
             }
@@ -69,11 +70,6 @@ namespace GarageExercise.Classes
         {
             // Validating reg number
             if (string.IsNullOrWhiteSpace(value))
-            {
-                return false;
-            }
-            // Using Regex to check format
-            if (!Regex.IsMatch(value, @"^[a-zA-Z]{3}\d{3}$"))
             {
                 return false;
             }
