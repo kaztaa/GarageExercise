@@ -16,6 +16,6 @@
             FuelType = fuelType;
         }
 
-        public override void IsParked() => Console.WriteLine($"Airplane with Register Number {RegNumber} is parked.");
+        public override void IsParked() => Console.WriteLine($"Airplane {RegNumber} is parked.");
     }
 }

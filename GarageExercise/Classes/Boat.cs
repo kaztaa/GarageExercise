@@ -1,5 +1,4 @@
 ﻿namespace GarageExercise.Classes
-
 {
     public class Boat : Vehicle
     {
@@ -15,6 +14,6 @@
             Length = length;
         }
 
-        public override void IsParked() => Console.WriteLine($"The boat with Register Number {RegNumber} is parked.");
+        public override void IsParked() => Console.WriteLine($"Boat {RegNumber} is parked.");
     }
 }

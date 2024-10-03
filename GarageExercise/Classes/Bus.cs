@@ -15,6 +15,6 @@
         }
 
         // Parked message
-        public override void IsParked() => Console.WriteLine($"Car {RegNumber} is parked.");
+        public override void IsParked() => Console.WriteLine($"Bus {RegNumber} is parked.");
     }
 }
