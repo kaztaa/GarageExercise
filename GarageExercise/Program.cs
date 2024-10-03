@@ -19,8 +19,9 @@ namespace GarageExercise
             var ui = new UI(garage);
             var garageHandler = new GarageHandler(garage, ui);
             var manager = new Manager(ui, garageHandler);
-
+            
             manager.Start();
+           
         }
     }
 }

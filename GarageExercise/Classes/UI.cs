@@ -113,11 +113,7 @@ namespace GarageExercise.Classes
             }
         }
 
-        // Show vehicle details
-        private void ShoweDetails(IVehicle vehicle)
-        {
-
-        }
+ 
 
         // Method for unparking vechicle
         private void UnparkVehicle()
@@ -154,10 +150,76 @@ namespace GarageExercise.Classes
                 Console.WriteLine();
             }
         }
+
+        // Method for searchin vehicle
         private void SearchVehicle()
         {
+            Console.WriteLine("Search, enter details or leave blank to skip:");
 
+
+            Console.Write("Reg number: ");
+            string regNumber = Console.ReadLine();
+
+            Console.Write("Color:  ");
+            string color = Console.ReadLine();
+
+            Console.Write("Number of wheels: ");
+            string wheelsNumberStr = Console.ReadLine();
+            int? wheelsNumber = string.IsNullOrWhiteSpace(wheelsNumberStr) ? (int?)null : int.Parse(wheelsNumberStr);
+
+            Console.Write("Type: ");
+            string type = Console.ReadLine();
+
+            var filteredVehicles = garage.Vehicles.Where(v =>
+                (string.IsNullOrWhiteSpace(regNumber) || v.RegNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrWhiteSpace(color) || v.Color.Equals(color, StringComparison.OrdinalIgnoreCase)) &&
+                (!wheelsNumber.HasValue || v.WheelsNumber == wheelsNumber.Value) &&
+                (string.IsNullOrWhiteSpace(type) || v.Type.Equals(type, StringComparison.OrdinalIgnoreCase)));
+
+            if (filteredVehicles.Any())
+            {
+                Console.WriteLine($"Found {filteredVehicles.Count()} matching vehicles:");
+                Console.WriteLine("----------------------------------------------------");
+                foreach (var vehicle in filteredVehicles)
+                {
+                    DisplayDetails(vehicle);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Could not find any matching vehicles.");
+            }
         }
+
+
+        // Method used by SearchVehicle to display details.
+        private void DisplayDetails(IVehicle vehicle)
+        {
+            switch (vehicle)
+            {
+                case Car car:
+                    Console.WriteLine($"Type: {car.Type} , Reg number: {car.RegNumber}");
+                    break;
+                case Bus bus:
+                    Console.WriteLine($"Type: {bus.Type} , Reg number: {bus.RegNumber}");
+                    break;
+                case Airplane airplane:
+                    Console.WriteLine($"Type: {airplane.Type} , Reg number: {airplane.RegNumber}");
+                    break;
+                case Boat boat:
+                    Console.WriteLine($"Type: {boat.Type} , Reg number: {boat.RegNumber}");
+                    break;
+                case Motorcycle motorcycle:
+                    Console.WriteLine($"Type: {motorcycle.Type} , Reg number: {motorcycle.RegNumber}");
+                    break;
+                default:
+                    Console.WriteLine("Error. Wrong vehicle type.");
+                    break;
+            }
+        }
+
+
+        // Create vehicles using IVehicle interface.
         private IVehicle CreateMotorcycle()
         {
             return new Motorcycle(
