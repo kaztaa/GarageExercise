@@ -66,9 +66,9 @@ namespace GarageExercise.Classes
             WheelsNumber = wheelsNumber;
         }
 
+        // Validating reg number
         private bool IsValidRegNumber(string value)
         {
-            // Validating reg number
             if (string.IsNullOrWhiteSpace(value))
             {
                 return false;

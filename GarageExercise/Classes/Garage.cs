@@ -11,6 +11,7 @@ namespace GarageExercise.Classes
 
         // Number of vehicles parked
         private int count = 0;
+        public int Capacity => vehicles.Length;
 
         public Garage(int capacity)
         {

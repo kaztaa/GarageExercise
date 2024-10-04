@@ -1,5 +1,5 @@
 ﻿using GarageExercise.Interfaces;
-using System.ComponentModel.Design;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 namespace GarageExercise.Classes
@@ -7,26 +7,30 @@ namespace GarageExercise.Classes
     // Class UI implementing interface IUI
     public class UI : IUI
     {
+        private readonly GarageHandler garageHandler;
+
         // Field with reference to garage containing type IVehicle 
         private readonly Garage<IVehicle> garage;
 
         // Constructor
-        public UI(Garage<IVehicle> garage)
+        public UI(GarageHandler garageHandler)
         {
-            this.garage = garage;
+            this.garageHandler = garageHandler;
         }
-        
-        // Starting the menu
+
+
+        // Starting the garage menu
         public void Start()
         {
-
             while (true)
             {
+                ShowGarageStatus();
                 Console.WriteLine("1. Park a vehicle");
                 Console.WriteLine("2. Unpark a vehicle");
                 Console.WriteLine("3. List parked vehicle(s)");
                 Console.WriteLine("4. Search for a vehicle");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("5. New garage");
+                Console.WriteLine("0. Exit");
                 Console.Write("Enter your choice: ");
 
                 string choice = Console.ReadLine();
@@ -44,9 +48,13 @@ namespace GarageExercise.Classes
                         ListVehicles();
                         break;
                     case "4":
-                         SearchVehicle();
+                        SearchVehicle();
                         break;
                     case "5":
+                        Console.WriteLine("Create new garage");
+                        NewGarage();
+                        break;
+                    case "0":
                         Console.WriteLine("Exiting...");
                         Environment.Exit(0);
                         break;
@@ -57,6 +65,20 @@ namespace GarageExercise.Classes
             }
         }
 
+        private void NewGarage()
+        {
+            Console.WriteLine("Enter the garage capacity: ");
+            if (int.TryParse(Console.ReadLine(), out int capacity))
+            {
+                // Using garageHandler to create new garage
+                garageHandler.CreateNewGarage(capacity);
+                Console.WriteLine($"Garage created with {capacity} slots.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid capacity. Please enter a valid number.");
+            }
+        }
 
         // Method for parking a vehicle in the garage
         private void ParkVehicle()
@@ -102,28 +124,27 @@ namespace GarageExercise.Classes
         // Private method for parking vehicle. Passing the vehicle to be parked 
         private void ParkVehicle(IVehicle vehicleToPark)
         {
-            // Checking if there is a vechile to park
             if (vehicleToPark != null)
             {
-                garage.ParkVehicle(vehicleToPark);
-                Console.WriteLine($"{vehicleToPark.Type} with Reg number {vehicleToPark.RegNumber} is parked.\n");
+                garageHandler.ParkVehicle(vehicleToPark); // Using GarageHandler to park the vehicle
+                Console.WriteLine($"{vehicleToPark.Type} with reg number {vehicleToPark.RegNumber} is parked.\n");
             }
             else
             {
-                Console.WriteLine("Error. Failed to park vehicle.\n");
+                Console.WriteLine("Error. Failed to park vehicle.");
             }
         }
 
- 
-
         // Method for unparking vechicle
+
         private void UnparkVehicle()
         {
             string regNumber = GetPropertyValue("Reg number of the vehicle to unpark");
-            var vehicle = garage.Vehicles.FirstOrDefault(v => v.RegNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase));
+            var vehicle = garageHandler.GetVehicles().FirstOrDefault(v => v.RegNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase));
+
             if (vehicle != null)
             {
-                garage.UnparkVehicle(vehicle);
+                garageHandler.UnparkVehicle(vehicle);
                 Console.WriteLine($"Vehicle {regNumber} is unparked.");
             }
             else
@@ -135,27 +156,31 @@ namespace GarageExercise.Classes
         // Method for listing parked vehicles 
         private void ListVehicles()
         {
+            // Get vehicle from GarageHandler
+            var vehicles = garageHandler.GetVehicles();
+
             // Counting parked vehicles
-            int vehicleCount = garage.Vehicles.Count();
+            int vehicleCount = vehicles.Count();
             Console.WriteLine($"Vehicles are parked: {vehicleCount}");
-            
-            foreach (var vehicle in garage.Vehicles)
+
+            foreach (var vehicle in vehicles)
             {
                 Console.WriteLine($"Type: {vehicle.Type}\nReg number: {vehicle.RegNumber}\nColor: {vehicle.Color}\nNumber of wheels: {vehicle.WheelsNumber}");
-                
-                if (vehicle is Motorcycle motorcycle)
-                    Console.WriteLine($"Cylinder Volume: {motorcycle.CylinderVolume}\nFuel type: {motorcycle.FuelType}");
 
+                if (vehicle is Motorcycle motorcycle)
+                {
+                    Console.WriteLine($"Cylinder Volume: {motorcycle.CylinderVolume}\nFuel type: {motorcycle.FuelType}");
+                }
 
                 Console.WriteLine();
             }
         }
 
+ 
         // Method for searchin vehicle
         private void SearchVehicle()
         {
             Console.WriteLine("Search, enter details or leave blank to skip:");
-
 
             Console.Write("Reg number: ");
             string regNumber = Console.ReadLine();
@@ -170,7 +195,11 @@ namespace GarageExercise.Classes
             Console.Write("Type: ");
             string type = Console.ReadLine();
 
-            var filteredVehicles = garage.Vehicles.Where(v =>
+            // Get vehicle from GarageHandler
+            var vehicles = garageHandler.GetVehicles();
+
+            // Filter vechiles based on search criteria
+            var filteredVehicles = vehicles.Where(v =>
                 (string.IsNullOrWhiteSpace(regNumber) || v.RegNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase)) &&
                 (string.IsNullOrWhiteSpace(color) || v.Color.Equals(color, StringComparison.OrdinalIgnoreCase)) &&
                 (!wheelsNumber.HasValue || v.WheelsNumber == wheelsNumber.Value) &&
@@ -178,8 +207,7 @@ namespace GarageExercise.Classes
 
             if (filteredVehicles.Any())
             {
-                Console.WriteLine($"Found {filteredVehicles.Count()} matching vehicles:");
-                Console.WriteLine("----------------------------------------------------");
+                Console.WriteLine($"Found {filteredVehicles.Count()} matching vehicles:\n");
                 foreach (var vehicle in filteredVehicles)
                 {
                     DisplayDetails(vehicle);
@@ -241,13 +269,10 @@ namespace GarageExercise.Classes
                 GetPropertyValue("Fuel type"),
                 GetDoublePropertyValue("Length")
             );
-
-
         }
 
         private IVehicle CreateCar()
         {
-            
             Car car = new Car(
                 GetPropertyValue("Reg number"),
                 GetPropertyValue("Color"),
@@ -266,9 +291,7 @@ namespace GarageExercise.Classes
                 GetNumericPropertyValue("Number of wheels"),
                 GetNumericPropertyValue("Number of seats"),
                 GetPropertyValue("Fuel type")
-
             );
-
         }
 
         private IVehicle CreateAirplane()
@@ -283,16 +306,11 @@ namespace GarageExercise.Classes
                 );
         }
 
-
-
-
-
         // Dynamic methods for getting propery values from vehicles
 
         // For properties of type string
         private string GetPropertyValue(string propertyName)
         {
-
             // Reg number check
             if (propertyName == "Reg number")
             {
@@ -347,6 +365,13 @@ namespace GarageExercise.Classes
                 Console.WriteLine("Error. Enter correct double.");
                 return -1; // Return a default value or an indicator of error
             }
+        }
+        // Method to show garage status.
+        private void ShowGarageStatus()
+        {
+            int totalSpots = garageHandler.GetCapacity(); // Get capacity of the garage
+            int parkedVehiclesCount = garageHandler.GetParkedVehiclesCount(); // Get number of parked vehicles
+            Console.WriteLine($"Garage Status: {parkedVehiclesCount} / {totalSpots} vehicles parked.");
         }
 
     }

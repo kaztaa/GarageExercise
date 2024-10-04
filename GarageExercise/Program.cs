@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using GarageExercise.Classes;
+﻿using GarageExercise.Classes;
 using GarageExercise.Interfaces;
 
 namespace GarageExercise
@@ -13,15 +7,14 @@ namespace GarageExercise
     {
         static void Main(string[] args)
         {
-
-            // Initializing Garage, UI, GarageHandler and Manager
+            // Initializing with standard garage with 10 spots
             var garage = new Garage<IVehicle>(10);
-            var ui = new UI(garage);
-            var garageHandler = new GarageHandler(garage, ui);
+            var garageHandler = new GarageHandler(garage, null); // GarageHandler is first created
+            var ui = new UI(garageHandler); // Sending the instance of GarageHandler garageHandler to UI
+            garageHandler = new GarageHandler(garage, ui); // Uppdate garageHandler with garage and ui
+
             var manager = new Manager(ui, garageHandler);
-            
             manager.Start();
-           
         }
     }
 }
