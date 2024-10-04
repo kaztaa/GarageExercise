@@ -1,5 +1,4 @@
 ﻿namespace GarageExercise.Interfaces
-
 {
     // Interface for Garage
     public interface IGarage<T>
