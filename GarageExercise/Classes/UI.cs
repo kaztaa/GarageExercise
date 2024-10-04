@@ -124,14 +124,26 @@ namespace GarageExercise.Classes
         // Private method for parking vehicle. Passing the vehicle to be parked 
         private void ParkVehicle(IVehicle vehicleToPark)
         {
-            if (vehicleToPark != null)
+
+            int totalSpots = garageHandler.GetCapacity();
+            int parkedVehiclesCount = garageHandler.GetParkedVehiclesCount();
+
+            if (parkedVehiclesCount < totalSpots)  // If there is space left in the garage
             {
-                garageHandler.ParkVehicle(vehicleToPark); // Using GarageHandler to park the vehicle
-                Console.WriteLine($"{vehicleToPark.Type} with reg number {vehicleToPark.RegNumber} is parked.\n");
+
+                if (vehicleToPark != null)
+                {
+                    garageHandler.ParkVehicle(vehicleToPark); // Using GarageHandler to park the vehicle
+                    Console.WriteLine($"{vehicleToPark.Type} with reg number {vehicleToPark.RegNumber} is parked.\n");
+                }
+                else
+                {
+                    Console.WriteLine("Error. Failed to park vehicle, faulty input.\n");
+                }
             }
             else
             {
-                Console.WriteLine("Error. Failed to park vehicle.");
+                Console.WriteLine("Error. Failed to park vehicle, garage is full!\n");
             }
         }
 
